@@ -2,8 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FormScreen1 extends StatelessWidget {
-  FormScreen1({super.key});
+class FormScreen1 extends StatefulWidget {
+  const FormScreen1({super.key});
+
+  @override
+  State<FormScreen1> createState() => _FormScreen1State();
+}
+
+class _FormScreen1State extends State<FormScreen1> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -14,24 +20,21 @@ class FormScreen1 extends StatelessWidget {
     passwordController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     bool? value = false;
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 32),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
-              child: SizedBox(
-                height: screenSize.height * 0.2,
-                width: screenSize.width * 0.3,
-                child: Image.network(
-                  "https://imgs.search.brave.com/ImFHQTLYVnJzX7d4weLdLBsrTgwcRaKVnnM0p0pXDRo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzY4LzIvcGhvdG8t/YWktbG9nby1wbmdf/c2Vla2xvZ28tNjgy/NjAzLnBuZz92PTE5/Njg2ODY4MDMzNjkz/MDU2MDg",
-                ),
+            SizedBox(height: screenSize.height * 0.1,),
+            SizedBox(
+              height: screenSize.height * 0.2,
+              width: screenSize.width * 0.3,
+              child: Image.network(
+                "https://imgs.search.brave.com/ImFHQTLYVnJzX7d4weLdLBsrTgwcRaKVnnM0p0pXDRo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzY4LzIvcGhvdG8t/YWktbG9nby1wbmdf/c2Vla2xvZ28tNjgy/NjAzLnBuZz92PTE5/Njg2ODY4MDMzNjkz/MDU2MDg",
               ),
             ),
             Text(
@@ -50,9 +53,8 @@ class FormScreen1 extends StatelessWidget {
                 color: Colors.grey.shade500,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: screenSize.height * 0.05),
             SizedBox(
-              width: screenSize.width * 0.8,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -67,8 +69,8 @@ class FormScreen1 extends StatelessWidget {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                color: Colors.grey.shade400,
-                                width: 2
+                                  color: Colors.grey.shade400,
+                                  width: 2
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -78,6 +80,21 @@ class FormScreen1 extends StatelessWidget {
                                   width: 2
                               ),
                             ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2
+                              ),
+                            ),
+
                             prefixIcon: Icon(CupertinoIcons.profile_circled, color: Colors.grey.shade400),
                             labelText: "Email or Username",
                             labelStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.bold),
@@ -109,8 +126,21 @@ class FormScreen1 extends StatelessWidget {
                                   width: 2
                               ),
                             ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2
+                              ),
+                            ),
                             prefixIcon: Icon(Icons.lock, color: Colors.grey.shade400),
-                            // prefixStyle: TextStyle(color: Colors.grey.shade400),
                             suffixIcon: Icon(Icons.visibility_off_rounded, color: Colors.grey.shade400),
                             labelText: "Password",
                             labelStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.bold),
@@ -142,7 +172,7 @@ class FormScreen1 extends StatelessWidget {
                           Text("Remember me"),
                         ],
                       ),
-
+        
                       Text("Forgot Password ?", style: GoogleFonts.inter(
                         color: Colors.deepPurple,
                       ),)
@@ -152,22 +182,23 @@ class FormScreen1 extends StatelessWidget {
                     width: double.infinity,
                     height: screenSize.height * 0.06,
                     child: FilledButton(
-                        onPressed: (){
-                          if (formKey.currentState!.validate()) {
-                            // If the form is valid, proceed with login
-                            print("Email: ${userNameController.text}");
-                            print("Password: ${passwordController.text}");
-                            userNameController.clear();
-                            passwordController.clear();
-                          }
-                          // userNameController.clear();
-                          // passwordController.clear();
-                        },
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
+                      onPressed: (){
+                        if (formKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Successfully!"),
+                            backgroundColor: Colors.green,)
+                          );
+                          print("Email: ${userNameController.text}");
+                          print("Password: ${passwordController.text}");
+                        }
+                        userNameController.clear();
+                        passwordController.clear();
+                      },
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)
-                          ),
                         ),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -210,16 +241,16 @@ class FormScreen1 extends StatelessWidget {
                         height: screenSize.height * 0.08,
                         width: screenSize.width * 0.18,
                         child: Container(
-                            decoration: BoxDecoration(
+                          decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: Colors.deepPurple.shade50,
                                 width: 2,
                               ),
                               color: Colors.white
-                            ),
+                          ),
                           child: Image.network("https://img.icons8.com/?size=96&id=17949&format=png",
-                          scale: 2,),
+                            scale: 2,),
                         ),
                       ),
                       SizedBox(
@@ -263,11 +294,11 @@ class FormScreen1 extends StatelessWidget {
                       Text("Don't have account?",style: GoogleFonts.inter(
                           color: Colors.grey.shade400,
                           fontSize: 16,
-                        fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold
                       ),),
                       TextButton(onPressed: (){}, child: Text("Sign Up", style: GoogleFonts.inter(
-                        color: Colors.deepPurple,
-                        fontSize: 16,
+                          color: Colors.deepPurple,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold
                       ),))
                     ],
@@ -281,5 +312,3 @@ class FormScreen1 extends StatelessWidget {
     );
   }
 }
-
-

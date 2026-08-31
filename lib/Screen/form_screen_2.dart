@@ -12,11 +12,15 @@ class FormScreen2 extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.chevron_left)),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           children: [
-            Image.network("https://cdn.vectorstock.com/i/500p/95/67/woman-shield-checkmark-protection-icon-vector-59939567.avif",
-            scale: 3,
+            Image.network(
+              height: screenSize.height * 0.1,
+              width: screenSize.width * 0.2,
+              "https://imgs.search.brave.com/xt9YXb497rPqrxjVAVFUALbJuHfAJyroAv1QhR2yt2g/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTkv/NDY0LzU0OS9zbWFs/bC9hLWNhcnRvb24t/d29tYW4taW4tYS1i/dXNpbmVzcy1zdWl0/LXdhdmluZy1oZXIt/aGFuZC1mcmVlLXBu/Zy5wbmc",
+            scale: 2,
             fit: BoxFit.cover,
             ),
             Text("Create your account", style: GoogleFonts.inter(
@@ -27,8 +31,8 @@ class FormScreen2 extends StatelessWidget {
               fontSize: 14,
               color: Colors.green.shade400,
             ),),
+            SizedBox(height: 20,),
             SizedBox(
-              width: screenSize.width * 0.8,
               child: Form(child: Column(
                 children: [
                   TextFormField(
@@ -125,10 +129,9 @@ class FormScreen2 extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: screenSize.height * 0.12,
+                    height: screenSize.height * 0.10,
                   ),
                   SizedBox(
-                    width: double.infinity,
                     height: screenSize.height * 0.06,
                     child: FilledButton(
                       onPressed: (){},
@@ -142,6 +145,18 @@ class FormScreen2 extends StatelessWidget {
                       )
                     ),
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          height: screenSize.height * 0.1,
+                          color: Colors.blueGrey,
+                          thickness: 1,
+                          endIndent: 12,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
               ),
