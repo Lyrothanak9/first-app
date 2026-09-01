@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'form_screen_2.dart';
+
 class FormScreen1 extends StatefulWidget {
   const FormScreen1({super.key});
 
@@ -20,6 +22,7 @@ class _FormScreen1State extends State<FormScreen1> {
     passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -29,7 +32,7 @@ class _FormScreen1State extends State<FormScreen1> {
         padding: EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           children: [
-            SizedBox(height: screenSize.height * 0.1,),
+            SizedBox(height: screenSize.height * 0.1),
             SizedBox(
               height: screenSize.height * 0.2,
               width: screenSize.width * 0.3,
@@ -69,35 +72,41 @@ class _FormScreen1State extends State<FormScreen1> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                  width: 2
+                                color: Colors.grey.shade400,
+                                width: 2,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                  width: 2
+                                color: Colors.grey.shade400,
+                                width: 2,
                               ),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 2
+                                color: Colors.red,
+                                width: 2,
                               ),
                             ),
                             focusedErrorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 2
+                                color: Colors.red,
+                                width: 2,
                               ),
                             ),
 
-                            prefixIcon: Icon(CupertinoIcons.profile_circled, color: Colors.grey.shade400),
+                            prefixIcon: Icon(
+                              CupertinoIcons.profile_circled,
+                              color: Colors.grey.shade400,
+                            ),
                             labelText: "Email or Username",
-                            labelStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.bold),
+                            labelStyle: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -115,37 +124,46 @@ class _FormScreen1State extends State<FormScreen1> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                  width: 2
+                                color: Colors.grey.shade400,
+                                width: 2,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                  width: 2
+                                color: Colors.grey.shade400,
+                                width: 2,
                               ),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 2
+                                color: Colors.red,
+                                width: 2,
                               ),
                             ),
                             focusedErrorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 2
+                                color: Colors.red,
+                                width: 2,
                               ),
                             ),
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey.shade400),
-                            suffixIcon: Icon(Icons.visibility_off_rounded, color: Colors.grey.shade400),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey.shade400,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.visibility_off_rounded,
+                              color: Colors.grey.shade400,
+                            ),
                             labelText: "Password",
-                            labelStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.bold),
+                            labelStyle: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          validator: (value){
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your password';
                             }
@@ -172,21 +190,24 @@ class _FormScreen1State extends State<FormScreen1> {
                           Text("Remember me"),
                         ],
                       ),
-        
-                      Text("Forgot Password ?", style: GoogleFonts.inter(
-                        color: Colors.deepPurple,
-                      ),)
+
+                      Text(
+                        "Forgot Password ?",
+                        style: GoogleFonts.inter(color: Colors.deepPurple),
+                      ),
                     ],
                   ),
                   SizedBox(
                     width: double.infinity,
                     height: screenSize.height * 0.06,
                     child: FilledButton(
-                      onPressed: (){
+                      onPressed: () {
                         if (formKey.currentState!.validate()) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Successfully!"),
-                            backgroundColor: Colors.green,)
+                            SnackBar(
+                              content: Text("Successfully!"),
+                              backgroundColor: Colors.green,
+                            ),
                           );
                           print("Email: ${userNameController.text}");
                           print("Password: ${passwordController.text}");
@@ -196,15 +217,19 @@ class _FormScreen1State extends State<FormScreen1> {
                       },
                       style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text("Login", style: GoogleFonts.inter(
-                            fontSize: 20,
-                          ), textAlign: TextAlign.center,)),
+                          Expanded(
+                            child: Text(
+                              "Login",
+                              style: GoogleFonts.inter(fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                           Icon(CupertinoIcons.arrow_right),
                         ],
                       ),
@@ -220,10 +245,13 @@ class _FormScreen1State extends State<FormScreen1> {
                           endIndent: 12,
                         ),
                       ),
-                      Text("or continue with",style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: Colors.blueGrey,
-                      ),),
+                      Text(
+                        "or continue with",
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
                       Expanded(
                         child: Divider(
                           height: screenSize.height * 0.1,
@@ -231,7 +259,7 @@ class _FormScreen1State extends State<FormScreen1> {
                           thickness: 1,
                           indent: 12,
                         ),
-                      )
+                      ),
                     ],
                   ),
                   Row(
@@ -242,15 +270,17 @@ class _FormScreen1State extends State<FormScreen1> {
                         width: screenSize.width * 0.18,
                         child: Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.deepPurple.shade50,
-                                width: 2,
-                              ),
-                              color: Colors.white
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.deepPurple.shade50,
+                              width: 2,
+                            ),
+                            color: Colors.white,
                           ),
-                          child: Image.network("https://img.icons8.com/?size=96&id=17949&format=png",
-                            scale: 2,),
+                          child: Image.network(
+                            "https://img.icons8.com/?size=96&id=17949&format=png",
+                            scale: 2,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -258,15 +288,17 @@ class _FormScreen1State extends State<FormScreen1> {
                         width: screenSize.width * 0.18,
                         child: Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.deepPurple.shade50,
-                                width: 2,
-                              ),
-                              color: Colors.white
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.deepPurple.shade50,
+                              width: 2,
+                            ),
+                            color: Colors.white,
                           ),
-                          child: Image.network("https://img.icons8.com/?size=96&id=c0DKfx1fatjh&format=png",
-                            scale: 2,),
+                          child: Image.network(
+                            "https://img.icons8.com/?size=96&id=c0DKfx1fatjh&format=png",
+                            scale: 2,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -274,35 +306,53 @@ class _FormScreen1State extends State<FormScreen1> {
                         width: screenSize.width * 0.18,
                         child: Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.deepPurple.shade50,
-                                width: 2,
-                              ),
-                              color: Colors.white
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.deepPurple.shade50,
+                              width: 2,
+                            ),
+                            color: Colors.white,
                           ),
-                          child: Image.network("https://img.icons8.com/?size=96&id=uLWV5A9vXIPu&format=png",
-                            scale: 2,),
+                          child: Image.network(
+                            "https://img.icons8.com/?size=96&id=uLWV5A9vXIPu&format=png",
+                            scale: 2,
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
-                  SizedBox(height: 32,),
+                  SizedBox(height: 32),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have account?",style: GoogleFonts.inter(
+                      Text(
+                        "Don't have account?",
+                        style: GoogleFonts.inter(
                           color: Colors.grey.shade400,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold
-                      ),),
-                      TextButton(onPressed: (){}, child: Text("Sign Up", style: GoogleFonts.inter(
-                          color: Colors.deepPurple,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold
-                      ),))
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FormScreen2(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Sign Up",
+                          style: GoogleFonts.inter(
+                            color: Colors.deepPurple,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
