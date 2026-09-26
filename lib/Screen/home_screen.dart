@@ -2,9 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Practice1 extends StatelessWidget {
-  const Practice1({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -12,7 +17,7 @@ class Practice1 extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Shopiza",
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             fontSize: 32,
           ),
@@ -205,7 +210,7 @@ class Practice1 extends StatelessWidget {
             ),
             // SizedBox(height: 10),
             Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -233,11 +238,11 @@ class Practice1 extends StatelessWidget {
                   children: [
                     ProductCard(
                       image:
-                          "https://imgs.search.brave.com/uwz8ukvsqPZ5TrNCB6PeONjd4ly0ux4GoCAVDWkt21s/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTEv/ODE1Lzc1Ny9zbWFs/bC8zZC1zdHVkaW8t/cG9kY2FzdC1oZWFk/cGhvbmVzLWRlc2ln/bi1wbmcucG5n",
+                      "https://imgs.search.brave.com/uwz8ukvsqPZ5TrNCB6PeONjd4ly0ux4GoCAVDWkt21s/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTEv/ODE1Lzc1Ny9zbWFs/bC8zZC1zdHVkaW8t/cG9kY2FzdC1oZWFk/cGhvbmVzLWRlc2ln/bi1wbmcucG5n",
                     ),
                     ProductCard(
                       image:
-                          "https://imgs.search.brave.com/eCpJ1id4z45PpmXzvCHtxM1nmEDRPqXBsSn-dqXgQZo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wbmcu/cG5ndHJlZS5jb20v/cG5nLXZlY3Rvci8y/MDI1MDEyNC9vdXJt/aWQvcG5ndHJlZS1h/LXJlZC1oZWFkcGhv/bmUtcG5nLWltYWdl/XzE1MzIwMDM3LnBu/Zw",
+                      "https://imgs.search.brave.com/eCpJ1id4z45PpmXzvCHtxM1nmEDRPqXBsSn-dqXgQZo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9wbmcu/cG5ndHJlZS5jb20v/cG5nLXZlY3Rvci8y/MDI1MDEyNC9vdXJt/aWQvcG5ndHJlZS1h/LXJlZC1oZWFkcGhv/bmUtcG5nLWltYWdl/XzE1MzIwMDM3LnBu/Zw",
                     ),
                   ],
                 ),
@@ -246,7 +251,6 @@ class Practice1 extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(),
     );
   }
 }
@@ -325,40 +329,6 @@ class _ProductCardState extends State<ProductCard> {
         ),
         child: Image.network(widget.image, fit: BoxFit.cover),
       ),
-    );
-  }
-}
-
-class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
-
-  @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar> {
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.shopping_cart),
-          label: 'Shop',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.clock),
-          label: 'Orders',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.gift),
-          label: "Wishlist",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.person_circle),
-          label: "Profile",
-        ),
-      ],
     );
   }
 }

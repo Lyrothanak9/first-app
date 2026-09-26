@@ -25,6 +25,11 @@ class _FormScreen2State extends State<FormScreen2> {
     super.dispose();
   }
 
+  // validation check strong password
+  bool _is8Characters = false;
+  bool _isNumber = false;
+  bool _isUppercase = false;
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -164,6 +169,13 @@ class _FormScreen2State extends State<FormScreen2> {
                     SizedBox(height: 16),
                     // Create new password
                     TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          _is8Characters = value.length >= 8;
+                          _isNumber = value.contains(RegExp(r'\d'));
+                          _isUppercase = value.contains(RegExp(r'[A-Z]'));
+                        });
+                      },
                       controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
@@ -264,10 +276,66 @@ class _FormScreen2State extends State<FormScreen2> {
                         if (value.length < 8) {
                           return 'Password must be at least 6 characters';
                         }
+
                         return null;
                       },
                     ),
-                    SizedBox(height: screenSize.height * 0.08),
+                    SizedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  _is8Characters ? Icons.check_circle : Icons.check_circle_outline,
+                                  color: _is8Characters ? Colors.green : Colors.grey,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8,),
+                                Text("At least 8 characters long", style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),),
+                              ],
+                            ),
+                            SizedBox(height: 4,),
+                            Row(
+                              children: [
+                                Icon(
+                                  _isNumber ? Icons.check_circle : Icons.check_circle_outline,
+                                  color: _isNumber ? Colors.green : Colors.grey,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8,),
+                                Text("Include a number", style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),),
+                              ],
+                            ),
+                            SizedBox(height: 4,),
+                            Row(
+                              children: [
+                                Icon(
+                                  _isUppercase ? Icons.check_circle : Icons.check_circle_outline,
+                                  color: _isUppercase ? Colors.green : Colors.grey,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8,),
+                                Text("Include an uppercase letter", style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: screenSize.height * 0.06,
                       child: FilledButton(

@@ -22,11 +22,11 @@ class _FormScreen1State extends State<FormScreen1> {
     passwordController.dispose();
     super.dispose();
   }
+  bool rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    bool? value = false;
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 32),
@@ -181,11 +181,16 @@ class _FormScreen1State extends State<FormScreen1> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Checkbox(
-                            tristate: true,
-                            value: value,
-                            onChanged: (bool? value) {},
+                            value: rememberMe,
+                            activeColor: Colors.green,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                rememberMe = value!;
+                              });
+                            },
                           ),
                           Text("Remember me"),
                         ],

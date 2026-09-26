@@ -1,9 +1,7 @@
-import 'package:first_app/Screen/home_screen.dart';
-import 'package:first_app/Screen/sign_in.dart';
+import 'package:first_app/Screen2/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'Screen/main_screen.dart';
-import 'Screen/sign_up.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,11 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: isLoggedIn ? '/' : '/auth',
-      routes: {
-        '/' : (context) => HomeScreen(),
-        '/auth' : (context) => SignInScreen(),
-      },
+      home: SignIn(),
     );
   }
 }
