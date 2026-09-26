@@ -2,6 +2,7 @@ import 'package:first_app/Screen/home_screen.dart';
 import 'package:first_app/Screen/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'Screen/board_screen.dart';
 import 'Screen/main_screen.dart';
 import 'Screen/sign_up.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: isLoggedIn ? '/' : '/auth',
       routes: {
-        '/' : (context) => HomeScreen(),
+        '/' : (context) => BoardScreen(),
         '/auth' : (context) => SignInScreen(),
       },
     );
