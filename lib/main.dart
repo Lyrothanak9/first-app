@@ -1,10 +1,10 @@
-import 'package:first_app/Screen/home_screen.dart';
 import 'package:first_app/Screen/sign_in.dart';
+import 'package:first_app/Widget/cart_vault.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'Screen/board_screen.dart';
-import 'Screen/main_screen.dart';
-import 'Screen/sign_up.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +15,14 @@ void main() async {
   final session = Supabase.instance.client.auth.currentSession;
   final bool isLoggedIn = session != null;
 
-  runApp(MyApp(isLoggedIn: isLoggedIn));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartVault()),
+      ],
+      child: MyApp(isLoggedIn: isLoggedIn),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -34,4 +41,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

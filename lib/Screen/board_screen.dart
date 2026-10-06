@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -13,6 +12,18 @@ class _BoardScreenState extends State<BoardScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController desController = TextEditingController();
 
+  late Future<List<Map<String, dynamic>>> _boardsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBoards();
+  }
+
+  void _loadBoards() {
+    _boardsFuture = fetchBoards();
+  }
+
   @override
   void dispose() {
     titleController.dispose();
@@ -20,148 +31,157 @@ class _BoardScreenState extends State<BoardScreen> {
     super.dispose();
   }
 
+  void _refreshBoards() {
+    setState(() {
+      _loadBoards();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SafeArea(
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  createBoard();
-                },
-                child: const Text("Click Button"),
+      appBar: AppBar(title: const Text('Boards Manager')),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Scrollable input section to prevent overflow when software keyboard appears
+              Expanded(
+                flex: 0,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Title',
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: titleController,
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Description',
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: desController,
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: createBoard,
+                        child: const Text("Create Board"),
+                      ),
+                      const SizedBox(height: 16),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "All Boards",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          TextField(
-            decoration: const InputDecoration(labelText: 'Title'),
-            controller: titleController,
-          ),
-          TextField(
-            decoration: const InputDecoration(labelText: 'Description'),
-            controller: desController,
-          ),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: fetchBoards(),
-              builder: (context, snapshot) {
-                // 1. While loading
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                // 2. If an error occurs
-                else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                // 3. If data is empty
-                else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No boards created yet.'));
-                }
+              // Expanded list section with pull-to-refresh
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _boardsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('No boards created yet.'),
+                      );
+                    }
 
-                // 4. Data loaded successfully
-                final boards = snapshot.data!;
-                return ListView.builder(
-                  itemCount: boards.length,
-                  itemBuilder: (context, index) {
-                    final board = boards[index];
-                    final String boardId = board['id'].toString();
+                    final boards = snapshot.data!;
+                    return RefreshIndicator(
+                      onRefresh: () async => _refreshBoards(),
+                      child: ListView.builder(
+                        itemCount: boards.length,
+                        itemBuilder: (context, index) {
+                          final board = boards[index];
+                          final String boardId = board['id'].toString();
 
-                    return Card(
-                      child: ListTile(
-                        title: Text(board['title'] ?? 'No Title'),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(board['des'] ?? 'No Description'),
-                            const SizedBox(height: 4),
-                            Text(
-                              'ID: $boardId',
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            child: ListTile(
+                              title: Text(
+                                board['title'] ?? 'No Title',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(board['des'] ?? 'No Description'),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'ID: $boardId',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                    ),
+                                    onPressed: () =>
+                                        _showUpdateDialog(board),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () =>
+                                        _showDeleteDialog(boardId),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                        // Action buttons (Edit & Delete)
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () {
-                                _showUpdateDialog(board);
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                // Trigger Delete Dialog instead of deleting right away
-                                _showDeleteDialog(boardId);
-                              },
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                     );
                   },
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  // Function to show the Update Dialog
   void _showUpdateDialog(Map<String, dynamic> board) {
-    final String boardId = board['id'].toString();
-    final TextEditingController updateTitleController =
-    TextEditingController(text: board['title']);
-    final TextEditingController updateDesController =
-    TextEditingController(text: board['des']);
-
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Update Board'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: updateTitleController,
-                decoration: const InputDecoration(labelText: 'New Title'),
-              ),
-              TextField(
-                controller: updateDesController,
-                decoration: const InputDecoration(labelText: 'New Description'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Close dialog
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await updateBoards(
-                  boardId,
-                  updateTitleController.text,
-                  updateDesController.text,
-                );
-                Navigator.pop(context); // Close dialog after updating
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
+      builder: (context) => UpdateBoardDialog(
+        board: board,
+        onUpdated: _refreshBoards,
+      ),
     );
   }
 
-  // Function to show Delete Confirmation Dialog
   void _showDeleteDialog(String boardId) {
     showDialog(
       context: context,
@@ -171,16 +191,19 @@ class _BoardScreenState extends State<BoardScreen> {
           content: const Text('Are you sure you want to delete this board?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context), // Close dialog
+              onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () async {
-                Navigator.pop(context); // Close dialog first
-                await deleteboards(boardId); // Then execute delete
+                Navigator.pop(context);
+                await deleteboards(boardId);
               },
-              child: const Text('Delete', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -189,14 +212,24 @@ class _BoardScreenState extends State<BoardScreen> {
   }
 
   Future<void> createBoard() async {
+    if (titleController.text.trim().isEmpty ||
+        desController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in both title and description'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     try {
-      final String currentUserId = Supabase.instance.client.auth.currentUser!.id;
       await Supabase.instance.client.from("boards").insert({
-        'title': titleController.text,
-        'des': desController.text,
-        'user_id': currentUserId,
+        'title': titleController.text.trim(),
+        'des': desController.text.trim(),
       });
-      print("Data created successfully!");
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Board created successfully!'),
@@ -206,52 +239,28 @@ class _BoardScreenState extends State<BoardScreen> {
       );
       titleController.clear();
       desController.clear();
-      setState(() {}); // Refresh list
+      _refreshBoards();
     } catch (e) {
-      print(e);
-      print("Failed to create data");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to create data: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   Future<List<Map<String, dynamic>>> fetchBoards() async {
     try {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user == null) {
-        print('No user logged in.');
-        return [];
-      }
-
       final response = await Supabase.instance.client
           .from("boards")
-          .select()
-          .eq("user_id", user.id);
+          .select();
 
       return List<Map<String, dynamic>>.from(response);
     } catch (error) {
       print('Failed to fetch boards: $error');
       return [];
-    }
-  }
-
-  Future<void> updateBoards(String id, String newTitle, String newDes) async {
-    try {
-      await Supabase.instance.client.from('boards').update({
-        'title': newTitle,
-        'des': newDes,
-      }).eq('id', id);
-
-      print("Data updated successfully!");
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Board updated successfully!'),
-          backgroundColor: Colors.blue,
-        ),
-      );
-
-      setState(() {}); // Refresh the UI list
-    } catch (e) {
-      print('Failed to update boards: $e');
     }
   }
 
@@ -262,8 +271,7 @@ class _BoardScreenState extends State<BoardScreen> {
           .delete()
           .eq('id', id);
 
-      print("Data deleted successfully!");
-
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Board deleted successfully!'),
@@ -271,9 +279,108 @@ class _BoardScreenState extends State<BoardScreen> {
         ),
       );
 
-      setState(() {}); // Refresh list and remove deleted board
+      _refreshBoards();
     } catch (e) {
       print("Failed to delete $e");
     }
+  }
+}
+
+class UpdateBoardDialog extends StatefulWidget {
+  final Map<String, dynamic> board;
+  final VoidCallback onUpdated;
+
+  const UpdateBoardDialog({
+    super.key,
+    required this.board,
+    required this.onUpdated,
+  });
+
+  @override
+  State<UpdateBoardDialog> createState() => _UpdateBoardDialogState();
+}
+
+class _UpdateBoardDialogState extends State<UpdateBoardDialog> {
+  late final TextEditingController updateTitleController;
+  late final TextEditingController updateDesController;
+
+  @override
+  void initState() {
+    super.initState();
+    updateTitleController = TextEditingController(text: widget.board['title']);
+    updateDesController = TextEditingController(text: widget.board['des']);
+  }
+
+  @override
+  void dispose() {
+    updateTitleController.dispose();
+    updateDesController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String boardId = widget.board['id'].toString();
+
+    return AlertDialog(
+      title: const Text('Update Board'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: updateTitleController,
+              decoration: const InputDecoration(labelText: 'New Title'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: updateDesController,
+              decoration: const InputDecoration(labelText: 'New Description'),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            if (updateTitleController.text.trim().isEmpty ||
+                updateDesController.text.trim().isEmpty) {
+              return;
+            }
+
+            try {
+              await Supabase.instance.client.from('boards').update({
+                'title': updateTitleController.text.trim(),
+                'des': updateDesController.text.trim(),
+              }).eq('id', boardId);
+
+              if (!context.mounted) return;
+              Navigator.pop(context);
+              widget.onUpdated();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Board updated successfully!'),
+                  backgroundColor: Colors.blue,
+                ),
+              );
+            } catch (e) {
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Failed to update: $e'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
   }
 }
